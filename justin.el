@@ -27,6 +27,9 @@
 ;; Change the newline-mark 'paragraph mark' to the paragraph symbol
 (setq whitespace-display-mappings '((newline-mark 10 [182 10])))
 
+;; Make C-n add newlines so I don't have to hit enter at the end of a
+;; buffer
+(setq next-line-add-newlines t)
 
 ;; REMINDERS
 ;;

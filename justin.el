@@ -18,6 +18,18 @@
 (add-hook 'ruby-mode-hook
           (lambda () (rvm-activate-corresponding-ruby)))
 
+;; Tramp Stuff
+(setq tramp-default-port 2211)
+
+;; SBCL + SLIME
+(load (expand-file-name "~/quicklisp/slime-helper.el"))
+(setq inferior-lisp-program "/usr/bin/sbcl")
+;;(add-to-list 'load-path "/usr/share/emacs/site-lisp/slime/")
+(add-to-list 'load-path "/home/justin/quicklisp/dists/quicklisp/software/slime-20111105-cvs")
+(require 'slime-autoloads)
+(slime-setup '(slime-fancy slime-fuzzy))
+(add-hook 'inferior-lisp-mode-hook (lambda () (inferior-slime-mode t)))
+
 ;; Set text to 12pt
 (set-face-attribute 'default nil :height 120)
 

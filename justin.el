@@ -9,8 +9,8 @@
 (add-to-list 'load-path "~/.emacs.d/personal/rhtml")
 (require 'rhtml-mode)
 
-;; Set text to 12pt
-(set-face-attribute 'default nil :height 120)
+;; Set text to 10pt
+(set-face-attribute 'default nil :height 100)
 
 ;; Clean up buffers before save
 (add-hook 'before-save-hook 'whitespace-cleanup)

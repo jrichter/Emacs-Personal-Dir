@@ -43,6 +43,10 @@
 ;; buffer
 (setq next-line-add-newlines t)
 
+;; Add expand region
+    (require 'expand-region)
+    (global-set-key (kbd "C-@") 'er/expand-region)
+
 ;; REMINDERS
 ;;
 ;; 'M-x cua-mode' enables rectangular text selection/editing DONT

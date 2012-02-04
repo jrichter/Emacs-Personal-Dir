@@ -30,6 +30,10 @@
 (slime-setup '(slime-fancy slime-fuzzy))
 (add-hook 'inferior-lisp-mode-hook (lambda () (inferior-slime-mode t)))
 
+;; W3M
+(add-to-list 'load-path "/usr/share/emacs/site-lisp/w3m/")
+(require 'w3m-load)
+
 ;; Set text to 12pt
 (set-face-attribute 'default nil :height 120)
 

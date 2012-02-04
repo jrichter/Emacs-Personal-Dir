@@ -30,8 +30,8 @@
 (slime-setup '(slime-fancy slime-fuzzy))
 (add-hook 'inferior-lisp-mode-hook (lambda () (inferior-slime-mode t)))
 
-;; Set text to 10pt
-(set-face-attribute 'default nil :height 100)
+;; Set text to 12pt
+(set-face-attribute 'default nil :height 120)
 
 ;; Clean up buffers before save
 (add-hook 'before-save-hook 'whitespace-cleanup)
@@ -44,8 +44,17 @@
 (setq next-line-add-newlines t)
 
 ;; Add expand region
+(add-to-list 'load-path "~/.emacs.d/personal/er")
     (require 'expand-region)
     (global-set-key (kbd "C-@") 'er/expand-region)
+
+;;Add yari Yet Another RI...
+(add-to-list 'load-path "~/.emacs.d/personal/yari")
+(require 'yari)
+(defun ri-bind-key ()
+  (local-set-key [f6] 'yari))
+
+(add-hook 'ruby-mode-hook 'ri-bind-key)
 
 ;; REMINDERS
 ;;

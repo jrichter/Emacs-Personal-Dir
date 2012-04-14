@@ -60,6 +60,11 @@
 
 (add-hook 'ruby-mode-hook 'ri-bind-key)
 
+;; TRAMP custom stuff
+(add-to-list 'tramp-default-method-alist '("home" "" "scp"))
+(add-to-list 'tramp-default-method-alist '("5.jetfive.com" "" "scp"))
+
+
 ;; REMINDERS
 ;;
 ;; 'M-x cua-mode' enables rectangular text selection/editing DONT

@@ -68,7 +68,7 @@
 (require 'auto-complete-config)
 
 ;; ace-jump-mode
-(define-key global-map (kbd "C-;") 'ace-jump-mode)
+(define-key global-map (kbd "C-c ;") 'ace-jump-mode)
 
 ;; rvm.el should allow us to automatically load the correct ruby by
 ;; looking at the associated .rvmrc

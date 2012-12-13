@@ -1,3 +1,7 @@
+(setq user-full-name "Justin Richter")
+(setq user-login-name "justin")
+(setq user-mail-address "jrichter@jetfive.com")
+
 ;; Load a custom theme
 (load-theme 'sanityinc-tomorrow-eighties t)
 
@@ -11,6 +15,9 @@
         (switch-to-buffer buffer)
         (get-buffer-window buffer 0)))
 
+;;sh-mode stuff
+(add-to-list 'auto-mode-alist '("\\.zsh-theme\\'" . sh-mode))
+
 ;; When splitting a buffer move point to new buffer
 (defadvice split-window (after move-point-to-new-window activate)
   "Moves the point to the newly created window after splitting."
@@ -19,12 +26,12 @@
 ;; After yank, indent region
 (defadvice yank (after indent-region activate)
   (if (member major-mode '(emacs-lisp-mode scheme-mode lisp-mode
-                           c-mode c++-mode objc-mode ruby-mode slim-mode lua-mode
-                           LaTeX-mode TeX-mode html-mode scss-mode css-mode))
+                                           c-mode c++-mode objc-mode ruby-mode slim-mode lua-mode
+                                           LaTeX-mode TeX-mode html-mode scss-mode css-mode))
       (indent-region (region-beginning) (region-end) nil)))
 ;; Set initial layout
-;; (setq default-frame-alist
-;;       '((top . 2) (left . 0) (width . 144) (height . 60)))
+(setq default-frame-alist
+      '((top . 0) (left . 0) (width . 144) (height . 60)))
 
 ;; Keybinding for commenting region
 ;; (global-set-key (kbd "C-;") 'comment-or-uncomment-region)
@@ -51,6 +58,17 @@
 (add-to-list 'auto-mode-alist '("\\.lua$" . lua-mode))
 (add-to-list 'interpreter-mode-alist '("lua" . lua-mode))
 
+;; kill flyspell-mode
+(defun fix-prelude-prog-mode-defaults ()
+  (turn-off-flyspell))
+
+(add-hook 'prelude-prog-mode-hook 'fix-prelude-prog-mode-defaults t)
+
+;; auto-complete mode
+(require 'auto-complete-config)
+
+;; ace-jump-mode
+(define-key global-map (kbd "C-;") 'ace-jump-mode)
 
 ;; rvm.el should allow us to automatically load the correct ruby by
 ;; looking at the associated .rvmrc
@@ -119,6 +137,18 @@
 ;; TRAMP custom stuff
 (add-to-list 'tramp-default-method-alist '("home" "" "scp"))
 (add-to-list 'tramp-default-method-alist '("5.jetfive.com" "" "scp"))
+
+;; Auto complete mode
+(require 'auto-complete)
+(add-to-list 'ac-modes 'ruby-mode)
+(global-auto-complete-mode)
+
+;; Show line at 110 char
+(require 'fill-column-indicator)
+(setq-default fill-column 110)
+(setq-default fci-rule-width 1)
+(setq-default fci-rule-color "#686868")
+(add-hook 'ruby-mode-hook 'fci-mode)
 
 
 ;; REMINDERS

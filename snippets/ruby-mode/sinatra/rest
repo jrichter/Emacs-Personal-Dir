@@ -1,0 +1,17 @@
+# This was cloned from a TextMate bundle for yasnippet.
+# --
+get '/${1:path}' do
+	${2}
+end
+
+post '/${1}' do
+	${3}
+end
+
+put '/${1}' do
+	${4}
+end
+
+delete '/${1}' do
+	${5}
+end

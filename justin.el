@@ -15,7 +15,15 @@
         (switch-to-buffer buffer)
         (get-buffer-window buffer 0)))
 
-;;sh-mode stuff
+;; js2-mode
+(autoload 'js2-mode "js2-mode" nil t)
+(add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
+
+;; load some js2-mode defaults from magnars
+(eval-after-load 'js2-mode '(require 'setup-js2-mode))
+(eval-after-load 'html-mode '(require 'setup-html-mode))
+
+;; sh-mode stuff
 (add-to-list 'auto-mode-alist '("\\.zsh-theme\\'" . sh-mode))
 
 ;; When splitting a buffer move point to new buffer
@@ -25,20 +33,97 @@
 
 ;; After yank, indent region
 (defadvice yank (after indent-region activate)
-  (if (member major-mode '(emacs-lisp-mode scheme-mode lisp-mode
-                                           c-mode c++-mode objc-mode ruby-mode slim-mode lua-mode
-                                           LaTeX-mode TeX-mode html-mode scss-mode css-mode))
+  (if (member major-mode '(emacs-lisp-mode scheme-mode lisp-mode sh-mode js-mode js2-mode
+                           c-mode c++-mode objc-mode ruby-mode slim-mode lua-mode
+                           LaTeX-mode TeX-mode html-mode scss-mode css-mode))
       (indent-region (region-beginning) (region-end) nil)))
+
 ;; Set initial layout
 (setq default-frame-alist
-      '((top . 0) (left . 0) (width . 144) (height . 60)))
+      '((width . 101) (height . 90)))
 
 ;; Keybinding for commenting region
 ;; (global-set-key (kbd "C-;") 'comment-or-uncomment-region)
 ;; This is already enabled with M-; by default
 
+;; terminal stuff
+(global-set-key (kbd "C-x t") '(lambda ()(interactive)(ansi-term "/bin/zsh")))
+
 ;; Keybinding for ido find-file-at-point
 (global-set-key (kbd "C-x a") 'find-file-at-point)
+
+
+;; Some usefule keybindings
+(global-set-key (kbd "C-w") 'backward-kill-word)
+(global-set-key (kbd "C-x C-k") 'kill-region)
+(global-set-key (kbd "C-c C-k") 'kill-region)
+
+;; auto-complete mode
+(require 'auto-complete-config)
+
+;; ace-jump-mode
+(global-set-key (kbd "C-c ;") 'ace-jump-mode)
+
+;; Buffer related from Magnars github
+(require 'imenu)
+
+(defun toggle-window-split ()
+  (interactive)
+  (if (= (count-windows) 2)
+      (let* ((this-win-buffer (window-buffer))
+             (next-win-buffer (window-buffer (next-window)))
+             (this-win-edges (window-edges (selected-window)))
+             (next-win-edges (window-edges (next-window)))
+             (this-win-2nd (not (and (<= (car this-win-edges)
+                                         (car next-win-edges))
+                                     (<= (cadr this-win-edges)
+                                         (cadr next-win-edges)))))
+             (splitter
+              (if (= (car this-win-edges)
+                     (car (window-edges (next-window))))
+                  'split-window-horizontally
+                'split-window-vertically)))
+        (delete-other-windows)
+        (let ((first-win (selected-window)))
+          (funcall splitter)
+          (if this-win-2nd (other-window 1))
+          (set-window-buffer (selected-window) this-win-buffer)
+          (set-window-buffer (next-window) next-win-buffer)
+          (select-window first-win)
+          (if this-win-2nd (other-window 1))))))
+
+(defun rotate-windows ()
+  "Rotate your windows"
+  (interactive)
+  (cond ((not (> (count-windows)1))
+         (message "You can't rotate a single window!"))
+        (t
+         (setq i 1)
+         (setq numWindows (count-windows))
+         (while  (< i numWindows)
+           (let* (
+                  (w1 (elt (window-list) i))
+                  (w2 (elt (window-list) (+ (% i numWindows) 1)))
+
+                  (b1 (window-buffer w1))
+                  (b2 (window-buffer w2))
+
+                  (s1 (window-start w1))
+                  (s2 (window-start w2))
+                  )
+             (set-window-buffer w1  b2)
+             (set-window-buffer w2 b1)
+             (set-window-start w1 s2)
+             (set-window-start w2 s1)
+             (setq i (1+ i)))))))
+
+
+;; Window switching
+(windmove-default-keybindings) ;; Shift+direction
+(global-set-key (kbd "C-x -") 'rotate-windows)
+(global-unset-key (kbd "C-x C--"))
+(global-set-key (kbd "C-x C--") 'toggle-window-split)
+
 
 ;; rhtml mode https://github.com/eschulte/rhtml.git
 (add-to-list 'load-path "~/.emacs.d/personal/rhtml")
@@ -58,17 +143,6 @@
 (add-to-list 'auto-mode-alist '("\\.lua$" . lua-mode))
 (add-to-list 'interpreter-mode-alist '("lua" . lua-mode))
 
-;; kill flyspell-mode
-(defun fix-prelude-prog-mode-defaults ()
-  (turn-off-flyspell))
-
-(add-hook 'prelude-prog-mode-hook 'fix-prelude-prog-mode-defaults t)
-
-;; auto-complete mode
-(require 'auto-complete-config)
-
-;; ace-jump-mode
-(define-key global-map (kbd "C-;") 'ace-jump-mode)
 
 ;; rvm.el should allow us to automatically load the correct ruby by
 ;; looking at the associated .rvmrc
@@ -123,7 +197,9 @@
 ;;     (global-set-key (kbd "C-@") 'er/expand-region)
 
 ;;Make yasnippet have the correct keybinding when editing C files
-
+(require 'yasnippet)
+(setq yas/snippet-dirs '("~/.emacs.d/personal/snippets"))
+(yas-global-mode 1)
 ( global-set-key [f7] 'yas/insert-snippet)
 
 ;;Add yari Yet Another RI...
@@ -140,15 +216,41 @@
 
 ;; Auto complete mode
 (require 'auto-complete)
-(add-to-list 'ac-modes 'ruby-mode)
+(add-to-list 'ac-modes 'ruby-mode 'javascript-mode)
+(setq ac-sources '(ac-source-semantic ac-source-yasnippet))
 (global-auto-complete-mode)
 
-;; Show line at 110 char
+;; Show line at 90 char
 (require 'fill-column-indicator)
-(setq-default fill-column 110)
+(setq-default fill-column 90)
 (setq-default fci-rule-width 1)
 (setq-default fci-rule-color "#686868")
 (add-hook 'ruby-mode-hook 'fci-mode)
+(add-hook 'js-mode-hook 'fci-mode)
+(add-hook 'js2-mode-hook 'fci-mode)
+
+;; Represent undo-history as an actual tree (visualize with C-x u)
+(setq undo-tree-mode-lighter "")
+(require 'undo-tree)
+(global-undo-tree-mode)
+
+;; Sentences do not need double spaces to end. Period.
+(set-default 'sentence-end-double-space nil)
+
+;; Add parts of each file's directory to the buffer name if not unique
+(require 'uniquify)
+(setq uniquify-buffer-name-style 'forward)
+
+;; When popping the mark, continue popping until the cursor actually moves
+;; Also, if the last command was a copy - skip past all the expand-region cruft.
+(defadvice pop-to-mark-command (around ensure-new-position activate)
+  (let ((p (point)))
+    (when (eq last-command 'save-region-or-current-line)
+      ad-do-it
+      ad-do-it
+      ad-do-it)
+    (dotimes (i 10)
+      (when (= p (point)) ad-do-it))))
 
 
 ;; REMINDERS
@@ -163,15 +265,21 @@
 ;; M-x follow-mode open a long file, then two buffers, enabel follow
 ;; mode to stretch the file across two or more buffers, C-x + to
 ;; balance the windows, very cool
+;;
+;; C-h m show all active minor and major mode key bindings
+;; C-c C-e sgml-close-tag
+;; C-c C-w html-mode wrap-tag which is a custom definition
+
+
 
 ;; Multiple Cursors
 (add-to-list 'load-path "~/.emacs.d/personal/multiple-cursors")
 (require 'multiple-cursors)
 
-(global-set-key (kbd "C-M->") 'mc/mark-next-like-this)
-(global-set-key (kbd "C-M-<") 'mc/mark-previous-like-this)
+(global-set-key (kbd "C->") 'mc/mark-next-like-this)
+(global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
 (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
-
+(global-set-key (kbd "C-c >") 'mc/mark-sgml-tag-pair)
 ;; From active region to multiple cursors:
 ;; (global-set-key (kbd "C-M-c C-S-c") 'mc/edit-lines)
 ;; (global-set-key (kbd "C-M-c C-e") 'mc/edit-ends-of-lines)
@@ -204,3 +312,10 @@
 
 ( global-set-key [f8] 'quick-copy-line)
 ( global-set-key [f9] 'quick-add-line)
+
+
+;; kill flyspell-mode
+(defun fix-prelude-prog-mode-defaults ()
+  (turn-off-flyspell))
+
+(add-hook 'prelude-prog-mode-hook 'fix-prelude-prog-mode-defaults t)

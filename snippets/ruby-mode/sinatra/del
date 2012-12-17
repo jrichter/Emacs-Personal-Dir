@@ -1,0 +1,5 @@
+# This was cloned from a TextMate bundle for yasnippet.
+# --
+delete '/${1:path}'${2:, options} do
+	$0
+end

@@ -1,0 +1,7 @@
+# This was cloned from a TextMate bundle for yasnippet.
+# --
+__END__
+
+@@ ${1:layout}
+${2:= yield}
+$0

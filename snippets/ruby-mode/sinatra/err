@@ -1,0 +1,5 @@
+# This was cloned from a TextMate bundle for yasnippet.
+# --
+error ${1:ErrorName} do
+	stop ${2:number}, ${3:'<h1>Error!</h1>'}
+end

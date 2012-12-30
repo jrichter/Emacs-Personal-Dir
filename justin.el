@@ -2,6 +2,18 @@
 (setq user-login-name "justin")
 (setq user-mail-address "jrichter@jetfive.com")
 
+;; Load packages not installed
+(require 'package)
+(add-to-list 'package-archives
+             '("marmalade" . "http://marmalade-repo.org/packages/"))
+(package-initialize)
+(when (not package-archive-contents)
+  (package-refresh-contents))
+(defvar my-packages '(clojure-mode
+                      nrepl))
+(dolist (p my-packages)
+  (when (not (package-installed-p p))
+    (package-install p)))
 ;; Load a custom theme
 (load-theme 'sanityinc-tomorrow-eighties t)
 
@@ -34,7 +46,7 @@
 ;; After yank, indent region
 (defadvice yank (after indent-region activate)
   (if (member major-mode '(emacs-lisp-mode scheme-mode lisp-mode sh-mode js-mode js2-mode
-                           c-mode c++-mode objc-mode ruby-mode slim-mode lua-mode
+                           c-mode c++-mode objc-mode ruby-mode slim-mode lua-mod clojure-mode
                            LaTeX-mode TeX-mode html-mode scss-mode css-mode))
       (indent-region (region-beginning) (region-end) nil)))
 
@@ -53,7 +65,7 @@
 (global-set-key (kbd "C-x a") 'find-file-at-point)
 
 
-;; Some usefule keybindings
+;; Some usefull keybindings
 (global-set-key (kbd "C-w") 'backward-kill-word)
 (global-set-key (kbd "C-x C-k") 'kill-region)
 (global-set-key (kbd "C-c C-k") 'kill-region)
@@ -63,6 +75,7 @@
 
 ;; ace-jump-mode
 (global-set-key (kbd "C-c ;") 'ace-jump-mode)
+(global-set-key (kbd "C-c :") 'ace-jump-word-mode)
 
 ;; Buffer related from Magnars github
 (require 'imenu)
@@ -153,14 +166,57 @@
 ;; Tramp Stuff
 (setq tramp-default-port 2211)
 
-;; SBCL + SLIME
-(load (expand-file-name "~/quicklisp/slime-helper.el"))
-(setq inferior-lisp-program "/usr/bin/sbcl")
-;;(add-to-list 'load-path "/usr/share/emacs/site-lisp/slime/")
-(add-to-list 'load-path "/home/justin/quicklisp/dists/quicklisp/software/slime-20111105-cvs")
-(require 'slime-autoloads)
-(slime-setup '(slime-fancy slime-fuzzy))
-(add-hook 'inferior-lisp-mode-hook (lambda () (inferior-slime-mode t)))
+;; ;; SBCL + SLIME
+;; (load (expand-file-name "~/quicklisp/slime-helper.el"))
+;; (setq inferior-lisp-program "/usr/bin/sbcl")
+;; ;;(add-to-list 'load-path "/usr/share/emacs/site-lisp/slime/")
+;; (add-to-list 'load-path "/home/justin/quicklisp/dists/quicklisp/software/slime-20111105-cvs")
+;; (require 'slime-autoloads)
+;; (slime-setup '(slime-fancy slime-fuzzy))
+;; (add-hook 'inferior-lisp-mode-hook (lambda () (inferior-slime-mode t)))
+
+;; Clojure Mode
+(autoload 'clojure-mode "clojure-mode" nil t)
+(add-to-list 'auto-mode-alist '("\\.cl\\'" . clojure-mode))
+(add-hook 'clojure-mode-hook
+          'clojure-test-mode)
+
+;; Clojure nrepl stuff
+(add-hook 'nrepl-interaction-mode-hook
+          'nrepl-turn-on-eldoc-mode)
+
+;;You can control the TAB key behavior in the REPL via the nrepl-tab-command variable.
+;;While the default command nrepl-indent-and-complete-symbol should be an adequate choice
+;;for most users, it's very easy to switch to another command if you wish to. For instance
+;;if you'd like TAB to only indent (maybe because you're used to completing with M-TAB)
+;;use the following snippet:
+(setq nrepl-tab-command 'indent-for-tab-command)
+
+;;Stop the error buffer from popping up while working in the REPL buffer:
+(setq nrepl-popup-stacktraces nil)
+
+;;Make C-c C-z switch to the *nrepl* buffer in the current window:
+(add-to-list 'same-window-buffer-names "*nrepl*")
+
+;;Enabling CamelCase support for editing commands(like forward-word, backward-word, etc)
+;;in nREPL is quite useful since we often have to deal with Java class and method names.
+;;The built-in Emacs minor mode subword-mode provides such functionality:
+(add-hook 'nrepl-mode-hook 'subword-mode)
+
+;;The use of paredit when editing Clojure (or any other Lisp) code is highly recommended.
+;;You're probably using it already in your clojure-mode buffers (if you're not you
+;;probably should). You might also want to enable paredit in the nREPL buffer as well:
+(add-hook 'nrepl-mode-hook 'paredit-mode)
+
+;;RainbowDelimiters is a minor mode which highlights parentheses, brackets, and braces
+;;according to their depth. Each successive level is highlighted in a different color.
+;;This makes it easy to spot matching delimiters, orient yourself in the code, and tell
+;;which statements are at a given depth. Assuming you've already installed
+;;RainbowDelimiters you can enable it in nREPL like this:
+(add-hook 'nrepl-mode-hook 'rainbow-delimiters-mode)
+
+;;fix for ac-nrepl
+(setq nrepl-connected-hook (reverse nrepl-connected-hook))
 
 ;; W3M
 (add-to-list 'load-path "/usr/share/emacs/site-lisp/w3m/")
@@ -216,7 +272,7 @@
 
 ;; Auto complete mode
 (require 'auto-complete)
-(add-to-list 'ac-modes 'ruby-mode 'javascript-mode)
+(add-to-list 'ac-modes 'ruby-mode 'javascript-mode 'clojure-mode)
 (setq ac-sources '(ac-source-semantic ac-source-yasnippet))
 (global-auto-complete-mode)
 
@@ -228,6 +284,7 @@
 (add-hook 'ruby-mode-hook 'fci-mode)
 (add-hook 'js-mode-hook 'fci-mode)
 (add-hook 'js2-mode-hook 'fci-mode)
+(add-hook 'clojure-mode-hook 'fci-mode)
 
 ;; Represent undo-history as an actual tree (visualize with C-x u)
 (setq undo-tree-mode-lighter "")
@@ -319,3 +376,59 @@
   (turn-off-flyspell))
 
 (add-hook 'prelude-prog-mode-hook 'fix-prelude-prog-mode-defaults t)
+
+
+;; Diminish modeline clutter
+(require 'diminish)
+(diminish 'helm-mode)
+(diminish 'projectile-mode)
+(diminish 'prelude-mode)
+(diminish 'yas-minor-mode)
+(add-hook 'ruby-mode-hook (lambda () (diminish 'guru-mode)))
+(add-hook 'js-mode-hook (lambda () (diminish 'guru-mode)))
+(add-hook 'js2-mode-hook (lambda () (diminish 'guru-mode)))
+(add-hook 'html-mode-hook (lambda () (diminish 'guru-mode)))
+(add-hook 'css-mode-hook (lambda () (diminish 'guru-mode)))
+(add-hook 'scss-mode-hook (lambda () (diminish 'guru-mode)))
+(add-hook 'sh-mode-hook (lambda () (diminish 'guru-mode)))
+(add-hook 'lisp-mode-hook (lambda () (diminish 'guru-mode)))
+(add-hook 'ruby-mode-hook (lambda () (diminish 'volatile-highlights-mode)))
+(add-hook 'js-mode-hook (lambda () (diminish 'volatile-highlights-mode)))
+(add-hook 'js2-mode-hook (lambda () (diminish 'volatile-highlights-mode)))
+(add-hook 'html-mode-hook (lambda () (diminish 'volatile-highlights-mode)))
+(add-hook 'css-mode-hook (lambda () (diminish 'volatile-highlights-mode)))
+(add-hook 'scss-mode-hook (lambda () (diminish 'volatile-highlights-mode)))
+(add-hook 'sh-mode-hook (lambda () (diminish 'volatile-highlights-mode)))
+(add-hook 'lisp-mode-hook (lambda () (diminish 'volatile-highlights-mode)))
+
+;; Allow search in gmail from gnus
+;; With G G in the Groups buffer, you search for mails in the current group. Note that this not work in virtual groups. If you want to search on all your mails, you should add the folder ‘All Mail’.
+(require 'nnir)
+
+;; bind gnus to F11
+;;(global-set-key [f11] 'gnus)
+
+;; Webjump
+(global-set-key (kbd "C-x g") 'webjump)
+
+;; Add Urban Dictionary to webjump
+(eval-after-load "webjump"
+  '(add-to-list 'webjump-sites
+                '("Urban Dictionary" .
+                  [simple-query
+                   "www.urbandictionary.com"
+                   "http://www.urbandictionary.com/define.php?term="
+                   ""])))
+
+(defun launch_gnus_new_frame ()
+  "Open a new frame and then launch gnus"
+  (interactive)
+  (let ((gmail_frame (make-frame '((name . "gmail") (window-system . x)))))
+    (select-frame-set-input-focus gmail_frame)
+    (if window-system
+        (set-frame-size (selected-frame) 101 90))
+    (gnus)
+    )
+  )
+
+(global-set-key [f11] 'launch_gnus_new_frame)

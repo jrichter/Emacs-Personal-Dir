@@ -17,6 +17,10 @@
 ;; Load a custom theme
 (load-theme 'sanityinc-tomorrow-eighties t)
 
+;; Set Google Chrome as default browser
+(setq browse-url-browser-function 'browse-url-generic
+      browse-url-generic-program "google-chrome")
+
 ;; Make compilation window not steal a buffer
 (setq special-display-buffer-names
       '("*compilation*"))
@@ -467,3 +471,29 @@
   )
 
 (global-set-key [f11] 'launch_gnus_new_frame)
+
+
+
+;; CSS search if there are open buffers
+(defun search-open-css-buffers-for-region-or-word ()
+  "Use the current region/point and search open css buffers"
+  (interactive)
+  (let (searchTerm)
+    (setq searchTerm
+          (if (region-active-p)
+              (buffer-substring-no-properties (region-beginning) (region-end))
+            (thing-at-point 'symbol)))
+    (multi-occur (mapcar (lambda (buf)
+                           (if (string-match "\w*.css" (buffer-name buf))
+                               buf)) (buffer-list))
+                 searchTerm 5)))
+
+(global-set-key (kbd "M-s-.") 'search-open-css-buffers-for-region-or-word)
+
+;; Turn on winner mode
+(setq winner-mode t)
+
+;; Ask for confirmation before quitting Emacs
+(add-hook 'kill-emacs-query-functions
+          (lambda () (y-or-n-p "Do you really want to exit Emacs? "))
+          'append)

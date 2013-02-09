@@ -10,7 +10,20 @@
 (when (not package-archive-contents)
   (package-refresh-contents))
 (defvar my-packages '(clojure-mode
-                      nrepl))
+                      clojure-test-mode
+                      nrepl
+                      ac-nrepl
+                      color-theme-sanityinc-tomorrow
+                      color-theme-sanityinc-solarized
+                      fill-column-indicator
+                      auto-complete
+                      undo-tree
+                      diminish
+                      js2-mode
+                      js2-refactor
+                      gnus
+                      bbdb
+                      ))
 (dolist (p my-packages)
   (when (not (package-installed-p p))
     (package-install p)))

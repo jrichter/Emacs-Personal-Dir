@@ -504,7 +504,7 @@
 (global-set-key (kbd "M-s-.") 'search-open-css-buffers-for-region-or-word)
 
 ;; Turn on winner mode
-(setq winner-mode t)
+(winner-mode t)
 
 ;; Ask for confirmation before quitting Emacs
 (add-hook 'kill-emacs-query-functions

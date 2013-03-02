@@ -3,7 +3,19 @@
       '((width . 101) (height . 90)))
 
 ;; Load a custom theme
-(load-theme 'sanityinc-tomorrow-eighties t)
+;;(load-theme 'sanityinc-tomorrow-eighties t)
+
+;; Change theme based on time of day
+(defun synchronize-theme ()
+  (setq hour
+        (string-to-number
+         (substring (current-time-string) 11 13)))
+  (if (member hour (number-sequence 6 17))
+      (load-theme 'solarized-light t)
+    (load-theme 'sanityinc-tomorrow-eighties t))
+  )
+
+(run-with-timer 0 3600 'synchronize-theme)
 
 ;; Set text to 12pt
 (set-face-attribute 'default nil :height 120)

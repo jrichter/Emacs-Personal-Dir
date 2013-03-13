@@ -23,6 +23,15 @@
                       js2-refactor
                       gnus
                       bbdb
+                      pyflakes
+                      flymake-python-pyflakes
+                      flymake-ruby
+                      flymake-lua
+                      flymake-haml
+                      flymake-json
+                      flymake-css
+                      flymake-sass
+                      flymake-jslint
                       ))
 (dolist (p my-packages)
   (when (not (package-installed-p p))
@@ -41,6 +50,10 @@
         (split-window)
         (switch-to-buffer buffer)
         (get-buffer-window buffer 0)))
+
+;; flymake python :note pyflakes must be installed
+(require 'flymake-python-pyflakes)
+(add-hook 'python-mode-hook 'flymake-python-pyflakes-load)
 
 ;; js2-mode
 (autoload 'js2-mode "js2-mode" nil t)
@@ -75,7 +88,6 @@
 ;; Keybinding for ido find-file-at-point
 (global-set-key (kbd "C-x a") 'find-file-at-point)
 
-
 ;; Some usefull keybindings
 (global-set-key (kbd "C-w") 'backward-kill-word)
 (global-set-key (kbd "C-x C-k") 'kill-region)
@@ -97,6 +109,10 @@
 (add-to-list 'load-path "~/.emacs.d/personal/ruby-tools")
 (require 'ruby-tools)
 
+;; flymake ruby
+(require 'flymake-ruby)
+(add-hook 'ruby-mode-hook 'flymake-ruby-load)
+
 ;; slim-mode
 (add-to-list 'load-path "~/.emacs.d/personal/")
 (require 'slim-mode)
@@ -107,6 +123,9 @@
 (add-to-list 'auto-mode-alist '("\\.lua$" . lua-mode))
 (add-to-list 'interpreter-mode-alist '("lua" . lua-mode))
 
+;; flymake lua
+(require 'flymake-lua)
+(add-hook 'ruby-mode-hook 'flymake-lua-load)
 
 ;; rvm.el should allow us to automatically load the correct ruby by
 ;; looking at the associated .rvmrc
@@ -279,3 +298,7 @@
 (require 'custom-gnus)
 
 (require 'my-layout-and-theme)
+
+;; disable those annoying tooltips
+(tooltip-mode -1)
+(column-number-mode t)

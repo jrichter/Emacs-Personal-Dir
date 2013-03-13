@@ -17,8 +17,10 @@
 
 (run-with-timer 0 3600 'synchronize-theme)
 
-;; Set text to 12pt
-(set-face-attribute 'default nil :height 120)
+;; Set text to 12pt except on jet which has a lower resolution
+(if (string= system-name "jet")
+    (set-face-attribute 'default nil :height 100)
+  (set-face-attribute 'default nil :height 120))
 
 ;; Set whitespace long line to really far off
 (setq whitespace-line-column 250)

@@ -21,6 +21,7 @@
                       diminish
                       js2-mode
                       js2-refactor
+                      lua-mode
                       gnus
                       bbdb
                       pyflakes
@@ -38,6 +39,10 @@
     (package-install p)))
 
 ;; Set Google Chrome as default browser
+(setq browse-url-browser-function 'browse-url-generic
+      browse-url-generic-program "google-chrome")
+
+;; Set Google Chrome as default
 (setq browse-url-browser-function 'browse-url-generic
       browse-url-generic-program "google-chrome")
 
@@ -74,7 +79,7 @@
 ;; After yank, indent region
 (defadvice yank (after indent-region activate)
   (if (member major-mode '(emacs-lisp-mode scheme-mode lisp-mode sh-mode js-mode js2-mode
-                           c-mode c++-mode objc-mode ruby-mode slim-mode lua-mod clojure-mode
+                           c-mode c++-mode objc-mode ruby-mode slim-mode lua-mode clojure-mode
                            LaTeX-mode TeX-mode html-mode scss-mode css-mode))
       (indent-region (region-beginning) (region-end) nil)))
 
@@ -101,6 +106,11 @@
 (global-set-key (kbd "C-c :") 'ace-jump-word-mode)
 
 
+(global-set-key (kbd "M-j")
+                (lambda ()
+                  (interactive)
+                  (join-line -1)))
+
 ;; rhtml mode https://github.com/eschulte/rhtml.git
 (add-to-list 'load-path "~/.emacs.d/personal/rhtml")
 (require 'rhtml-mode)
@@ -118,7 +128,7 @@
 (require 'slim-mode)
 
 ;; lua-mode
-(add-to-list 'load-path "~/.emacs.d/personal/lua-mode")
+;; (add-to-list 'load-path "~/.emacs.d/personal/lua-mode")
 (autoload 'lua-mode "lua-mode" "Lua editing mode." t)
 (add-to-list 'auto-mode-alist '("\\.lua$" . lua-mode))
 (add-to-list 'interpreter-mode-alist '("lua" . lua-mode))

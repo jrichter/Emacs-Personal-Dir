@@ -311,4 +311,3 @@
 
 ;; disable those annoying tooltips
 (tooltip-mode -1)
-(column-number-mode t)

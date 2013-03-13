@@ -24,7 +24,6 @@
                       lua-mode
                       gnus
                       bbdb
-                      pyflakes
                       flymake-python-pyflakes
                       flymake-ruby
                       flymake-lua

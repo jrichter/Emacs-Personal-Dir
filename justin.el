@@ -24,7 +24,6 @@
                       lua-mode
                       gnus
                       bbdb
-                      pyflakes
                       flymake-python-pyflakes
                       flymake-ruby
                       flymake-lua
@@ -33,6 +32,7 @@
                       flymake-css
                       flymake-sass
                       flymake-jslint
+                      robe
                       ))
 (dolist (p my-packages)
   (when (not (package-installed-p p))
@@ -111,6 +111,15 @@
                   (interactive)
                   (join-line -1)))
 
+;;----------------------------------------------------------------------------
+;; Ruby - robe
+;;----------------------------------------------------------------------------
+(add-hook 'ruby-mode-hook 'robe-mode)
+(add-hook 'robe-mode-hook
+          (lambda ()
+            (add-to-list 'ac-sources 'ac-source-robe)
+            (setq completion-at-point-functions '(auto-complete))))
+
 ;; rhtml mode https://github.com/eschulte/rhtml.git
 (add-to-list 'load-path "~/.emacs.d/personal/rhtml")
 (require 'rhtml-mode)
@@ -157,8 +166,8 @@
 
 
 ;; W3M
-(add-to-list 'load-path "/usr/share/emacs/site-lisp/w3m/")
-(require 'w3m-load)
+;; (add-to-list 'load-path "/usr/share/emacs/site-lisp/w3m/")
+;; (require 'w3m-load)
 
 ;; Helm Mode
 (helm-mode 1)

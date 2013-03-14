@@ -1,7 +1,8 @@
 ;; Set initial layout
 (setq default-frame-alist
-      '((width . 101) (height . 90)))
+      '((width . 101) (height . 90) (left-fringe . 8) (right-fringe . 4)))
 
+(fringe-mode (cons 8 4))
 ;; Load a custom theme
 ;;(load-theme 'sanityinc-tomorrow-eighties t)
 

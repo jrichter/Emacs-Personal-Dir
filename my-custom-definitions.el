@@ -5,6 +5,17 @@
 ;; Define H-d for helm-find-files which is quicker than C-x c C-x C-f
 (global-set-key (kbd "H-d") 'helm-find-files)
 
+;; Define H-f for helm-prelude
+(global-set-key (kbd "H-f") 'helm-prelude)
+
+;; Define H-b for helm-buffers-list
+(global-set-key (kbd "H-b") 'helm-buffers-list)
+
+;; H-e is defined at end of file for eshell
+
+;; Remove C-z from command suspend-emacs
+(global-unset-key (kbd "C-z"))
+
 (defun quick-copy-line ()
   "Copy the whole line that point is on and move to the beginning of the next line.
     Consecutive calls to this command append each line to the
@@ -135,6 +146,7 @@
 (windmove-default-keybindings) ;; Shift+direction
 (global-set-key (kbd "C-x -") 'rotate-windows)
 (global-unset-key (kbd "C-x C--"))
+
 (global-set-key (kbd "C-x C--") 'toggle-window-split)
 
 ;; Rename File/Buffer

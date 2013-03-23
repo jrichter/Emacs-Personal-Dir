@@ -1,8 +1,15 @@
 ;; Set initial layout
-(setq default-frame-alist
-      '((width . 101) (height . 90) (left-fringe . 8) (right-fringe . 4)))
+(if (string= system-name "justin-linux-mint")
+    (setq default-frame-alist
+          '((width . 151) (height . 90)))
+  (setq default-frame-alist
+        '((width . 101) (height . 90))))
 
 (fringe-mode (cons 8 4))
+
+;; turn on line numbers
+(global-linum-mode t)
+
 ;; Load a custom theme
 ;;(load-theme 'sanityinc-tomorrow-eighties t)
 
@@ -12,7 +19,7 @@
         (string-to-number
          (substring (current-time-string) 11 13)))
   (if (member hour (number-sequence 6 17))
-      (load-theme 'solarized-light t)
+      (load-theme 'zenburn t)
     (load-theme 'sanityinc-tomorrow-eighties t))
   )
 

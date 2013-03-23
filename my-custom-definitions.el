@@ -1,5 +1,10 @@
 ;; Define Custom Combos
 
+;; Define Caps Lock as Hyper key in linux settings
+
+;; Define H-d for helm-find-files which is quicker than C-x c C-x C-f
+(global-set-key (kbd "H-d") 'helm-find-files)
+
 (defun quick-copy-line ()
   "Copy the whole line that point is on and move to the beginning of the next line.
     Consecutive calls to this command append each line to the
@@ -59,6 +64,18 @@
 
 
 ;; Custom Defs I found from ye internets
+
+;; http://irreal.org/blog/?p=1742
+(global-set-key (kbd "H-e")
+                (lambda ()
+                  "Bring up a full-screen eshell or restore previous config."
+                  (interactive)
+                  (if (string= "eshell-mode" major-mode)
+                      (jump-to-register :eshell-fullscreen)
+                    (progn
+                      (window-configuration-to-register :eshell-fullscreen)
+                      (eshell)
+                      (delete-other-windows)))))
 
 ;; Buffer related from Magnars github
 (require 'imenu)
@@ -155,5 +172,12 @@
         (message "File '%s' successfully removed" filename)))))
 
 (global-set-key (kbd "C-x C-k") 'delete-current-buffer-file)
+
+;;http://puntoblogspot.blogspot.com/2013/03/poor-mans-taglist.html
+(defun rgc-show-ruby-tags ()
+  (interactive)
+  (occur "^\\s-*\\\(class \\\|module \\\|def \\\|[^:]include \\\|private\\b\\\|protected\\b\\\)"))
+
+(define-key ruby-mode-map (kbd "C-c C-t") 'rgc-show-ruby-tags)
 
 (provide 'my-custom-definitions)

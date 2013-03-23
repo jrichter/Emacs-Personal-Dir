@@ -56,6 +56,10 @@
         (switch-to-buffer buffer)
         (get-buffer-window buffer 0)))
 
+;; setup multi-term
+(require 'multi-term)
+(setq multi-term-program "/bin/zsh" )
+
 ;; flymake python :note pyflakes must be installed
 (require 'flymake-python-pyflakes)
 (add-hook 'python-mode-hook 'flymake-python-pyflakes-load)
@@ -219,7 +223,7 @@
 (add-hook 'js-mode-hook 'fci-mode)
 (add-hook 'js2-mode-hook 'fci-mode)
 (add-hook 'clojure-mode-hook 'fci-mode)
-
+(add-hook 'markdown-mode-hook 'fci-mode)
 ;; Represent undo-history as an actual tree (visualize with C-x u)
 (setq undo-tree-mode-lighter "")
 (require 'undo-tree)

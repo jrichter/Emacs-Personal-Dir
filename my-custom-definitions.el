@@ -16,6 +16,9 @@
 ;; Remove C-z from command suspend-emacs
 (global-unset-key (kbd "C-z"))
 
+;; Make sure emacs updates when the file changes.
+(global-auto-revert-mode)
+
 (defun quick-copy-line ()
   "Copy the whole line that point is on and move to the beginning of the next line.
     Consecutive calls to this command append each line to the
